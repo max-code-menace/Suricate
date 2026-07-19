@@ -25,6 +25,20 @@ npm run start   # puis 'i' pour iOS, 'a' pour Android
 
 `npm run typecheck` lance `tsc --noEmit`.
 
+## Tester sans PC : preview web sur GitHub Pages
+
+Un workflow (`.github/workflows/deploy-web-preview.yml`) build une version
+web de l'appli (`expo export --platform web`) et la déploie sur GitHub
+Pages à chaque push sur `main` ou sur cette branche. C'est une
+approximation (rendu web via `react-native-web`, gestes de swipe un peu
+moins précis qu'en natif) mais ça permet d'ouvrir l'appli depuis
+n'importe quel navigateur, y compris sur téléphone.
+
+À faire une seule fois, depuis les réglages du repo GitHub (Settings →
+Pages) : mettre "Source" sur **GitHub Actions**. Une fois activé, l'URL
+sera `https://<owner>.github.io/Suricate/` (le premier run peut prendre
+quelques minutes après l'activation).
+
 ## Structure
 
 ```
