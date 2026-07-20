@@ -1,5 +1,6 @@
 import { Tabs } from 'expo-router';
-import { Text } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
+import { BlurView } from 'expo-blur';
 
 import { colors } from '@/theme/tokens';
 
@@ -14,6 +15,10 @@ export default function MainLayout() {
         headerShown: false,
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textMuted,
+        tabBarStyle: styles.tabBar,
+        tabBarBackground: () => (
+          <BlurView intensity={50} tint="light" style={StyleSheet.absoluteFill} />
+        ),
       }}
     >
       <Tabs.Screen
@@ -31,3 +36,12 @@ export default function MainLayout() {
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  tabBar: {
+    position: 'absolute',
+    borderTopWidth: 1,
+    borderTopColor: colors.glassBorder,
+    backgroundColor: 'transparent',
+  },
+});
