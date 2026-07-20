@@ -1,9 +1,11 @@
 import { useRouter } from 'expo-router';
-import { Alert, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import { AppBackground } from '@/components/AppBackground';
 import { Avatar } from '@/components/Avatar';
+import { GlassPanel } from '@/components/GlassPanel';
 import { PrimaryButton } from '@/components/PrimaryButton';
-import { colors, radius, spacing, typography } from '@/theme/tokens';
+import { colors, spacing, typography } from '@/theme/tokens';
 import { useSessionStore } from '@/store/useSessionStore';
 import { useSwipeStore } from '@/store/useSwipeStore';
 
@@ -13,6 +15,7 @@ export default function ProfileScreen() {
   const logout = useSessionStore((state) => state.logout);
   const cravings = useSwipeStore((state) => state.cravings);
   const resetDeck = useSwipeStore((state) => state.resetDeck);
+  const streakDays = useSwipeStore((state) => state.streakDays);
 
   if (!myProfile) return null;
 
@@ -30,7 +33,7 @@ export default function ProfileScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <AppBackground>
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.header}>
           <Avatar emoji={myProfile.avatarEmoji} color={myProfile.avatarColor} size={96} />
@@ -38,14 +41,19 @@ export default function ProfileScreen() {
             {myProfile.name}, {myProfile.age}
           </Text>
           {!!myProfile.bio && <Text style={styles.bio}>{myProfile.bio}</Text>}
+          {streakDays > 0 && (
+            <GlassPanel style={styles.streak}>
+              <Text style={styles.streakText}>🔥 {streakDays} jour{streakDays > 1 ? 's' : ''} de suite</Text>
+            </GlassPanel>
+          )}
         </View>
 
-        <View style={styles.card}>
+        <GlassPanel strong style={styles.card}>
           <Text style={styles.cardLabel}>Ton plat préféré</Text>
           <Text style={styles.dishTitle}>
             {myProfile.favoriteDish.emoji} {myProfile.favoriteDish.title}
           </Text>
-        </View>
+        </GlassPanel>
 
         <Text style={styles.sectionTitle}>Tes envies ({cravings.length})</Text>
         {cravings.length === 0 ? (
@@ -54,13 +62,11 @@ export default function ProfileScreen() {
           </Text>
         ) : (
           cravings.map((recipe) => (
-            <Pressable
-              key={recipe.id}
-              style={styles.cravingRow}
-              onPress={() => router.push(`/recipe/${recipe.id}`)}
-            >
-              <Text style={styles.cravingEmoji}>{recipe.emoji}</Text>
-              <Text style={styles.cravingTitle}>{recipe.title}</Text>
+            <Pressable key={recipe.id} onPress={() => router.push(`/recipe/${recipe.id}`)} style={styles.cravingRowPressable}>
+              <GlassPanel style={styles.cravingRow}>
+                <Text style={styles.cravingEmoji}>{recipe.emoji}</Text>
+                <Text style={styles.cravingTitle}>{recipe.title}</Text>
+              </GlassPanel>
             </Pressable>
           ))
         )}
@@ -73,18 +79,14 @@ export default function ProfileScreen() {
         />
         <PrimaryButton label="Se déconnecter" variant="ghost" onPress={handleLogout} />
       </ScrollView>
-    </SafeAreaView>
+    </AppBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
   content: {
     padding: spacing.lg,
-    paddingBottom: spacing.xxl,
+    paddingBottom: 130,
   },
   header: {
     alignItems: 'center',
@@ -101,11 +103,17 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: spacing.xs,
   },
+  streak: {
+    marginTop: spacing.sm,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+  },
+  streakText: {
+    ...typography.caption,
+    fontWeight: '700',
+    color: colors.text,
+  },
   card: {
-    backgroundColor: colors.surface,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: colors.border,
     padding: spacing.md,
     marginBottom: spacing.lg,
   },
@@ -128,15 +136,13 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     marginBottom: spacing.lg,
   },
+  cravingRowPressable: {
+    marginBottom: spacing.sm,
+  },
   cravingRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: colors.border,
     padding: spacing.sm,
-    marginBottom: spacing.sm,
   },
   cravingEmoji: {
     fontSize: 24,

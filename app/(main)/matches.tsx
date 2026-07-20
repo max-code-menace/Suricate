@@ -1,8 +1,10 @@
 import { useRouter } from 'expo-router';
-import { FlatList, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { AppBackground } from '@/components/AppBackground';
 import { Avatar } from '@/components/Avatar';
-import { colors, radius, spacing, typography } from '@/theme/tokens';
+import { GlassPanel } from '@/components/GlassPanel';
+import { colors, spacing, typography } from '@/theme/tokens';
 import { useSwipeStore } from '@/store/useSwipeStore';
 import type { Match } from '@/data/types';
 
@@ -11,22 +13,21 @@ export default function MatchesScreen() {
   const matches = useSwipeStore((state) => state.matches);
 
   const renderItem = ({ item }: { item: Match }) => (
-    <Pressable
-      style={styles.row}
-      onPress={() => router.push(`/recipe/${item.profile.favoriteDish.id}`)}
-    >
-      <Avatar emoji={item.profile.avatarEmoji} color={item.profile.avatarColor} size={56} />
-      <View style={styles.rowInfo}>
-        <Text style={styles.name}>{item.profile.name}</Text>
-        <Text style={styles.dish}>
-          {item.profile.favoriteDish.emoji} {item.profile.favoriteDish.title}
-        </Text>
-      </View>
+    <Pressable onPress={() => router.push(`/recipe/${item.profile.favoriteDish.id}`)} style={styles.rowPressable}>
+      <GlassPanel style={styles.row}>
+        <Avatar emoji={item.profile.avatarEmoji} color={item.profile.avatarColor} size={56} />
+        <View style={styles.rowInfo}>
+          <Text style={styles.name}>{item.profile.name}</Text>
+          <Text style={styles.dish}>
+            {item.profile.favoriteDish.emoji} {item.profile.favoriteDish.title}
+          </Text>
+        </View>
+      </GlassPanel>
     </Pressable>
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <AppBackground>
       <Text style={styles.title}>Tes matches</Text>
 
       {matches.length === 0 ? (
@@ -43,15 +44,11 @@ export default function MatchesScreen() {
           contentContainerStyle={styles.list}
         />
       )}
-    </SafeAreaView>
+    </AppBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
   title: {
     ...typography.title,
     color: colors.text,
@@ -61,16 +58,15 @@ const styles = StyleSheet.create({
   },
   list: {
     paddingHorizontal: spacing.lg,
+    paddingBottom: 110,
+  },
+  rowPressable: {
+    marginBottom: spacing.sm,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderRadius: radius.md,
     padding: spacing.sm,
-    marginBottom: spacing.sm,
-    borderWidth: 1,
-    borderColor: colors.border,
   },
   rowInfo: {
     marginLeft: spacing.md,

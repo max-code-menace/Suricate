@@ -2,6 +2,7 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import { AppBackground } from '@/components/AppBackground';
 import { ChipPicker } from '@/components/ChipPicker';
 import { ColorPicker } from '@/components/ColorPicker';
 import { FormField } from '@/components/FormField';
@@ -59,7 +60,8 @@ export default function ProfileSetupScreen() {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <AppBackground>
+      <ScrollView contentContainerStyle={styles.content}>
       <Text style={styles.title}>Ton profil</Text>
       <Text style={styles.subtitle}>
         Les autres verront ta photo... et surtout ton plat préféré.
@@ -124,21 +126,18 @@ export default function ProfileSetupScreen() {
         style={styles.textarea}
       />
 
-      <PrimaryButton
-        label="Créer mon profil"
-        onPress={handleSubmit}
-        disabled={!canSubmit}
-        style={styles.submit}
-      />
-    </ScrollView>
+        <PrimaryButton
+          label="Créer mon profil"
+          onPress={handleSubmit}
+          disabled={!canSubmit}
+          style={styles.submit}
+        />
+      </ScrollView>
+    </AppBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
   content: {
     padding: spacing.xl,
     paddingBottom: spacing.xxl,

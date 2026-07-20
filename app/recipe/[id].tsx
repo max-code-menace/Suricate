@@ -1,6 +1,8 @@
 import { useLocalSearchParams } from 'expo-router';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import { AppBackground } from '@/components/AppBackground';
+import { GlassPanel } from '@/components/GlassPanel';
 import { findRecipeById } from '@/data/findRecipe';
 import { colors, radius, spacing, typography } from '@/theme/tokens';
 
@@ -10,48 +12,50 @@ export default function RecipeDetailScreen() {
 
   if (!recipe) {
     return (
-      <View style={styles.notFound}>
+      <AppBackground style={styles.notFound}>
         <Text style={styles.notFoundText}>Recette introuvable.</Text>
-      </View>
+      </AppBackground>
     );
   }
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.emoji}>{recipe.emoji}</Text>
-      <Text style={styles.title}>{recipe.title}</Text>
-      <Text style={styles.description}>{recipe.description}</Text>
+    <AppBackground>
+      <ScrollView contentContainerStyle={styles.content}>
+        <Text style={styles.emoji}>{recipe.emoji}</Text>
+        <Text style={styles.title}>{recipe.title}</Text>
+        <Text style={styles.description}>{recipe.description}</Text>
 
-      <View style={styles.tagRow}>
-        {recipe.tags.map((tag) => (
-          <View key={tag} style={styles.tag}>
-            <Text style={styles.tagText}>{tag}</Text>
-          </View>
-        ))}
-      </View>
+        <View style={styles.tagRow}>
+          {recipe.tags.map((tag) => (
+            <View key={tag} style={styles.tag}>
+              <Text style={styles.tagText}>{tag}</Text>
+            </View>
+          ))}
+        </View>
 
-      <Text style={styles.sectionTitle}>Ingrédients</Text>
-      {recipe.ingredients.map((ingredient) => (
-        <Text key={ingredient} style={styles.listItem}>
-          •  {ingredient}
-        </Text>
-      ))}
+        <GlassPanel strong style={styles.section}>
+          <Text style={styles.sectionTitle}>Ingrédients</Text>
+          {recipe.ingredients.map((ingredient) => (
+            <Text key={ingredient} style={styles.listItem}>
+              •  {ingredient}
+            </Text>
+          ))}
+        </GlassPanel>
 
-      <Text style={styles.sectionTitle}>Préparation</Text>
-      {recipe.steps.map((step, index) => (
-        <Text key={step} style={styles.listItem}>
-          {index + 1}.  {step}
-        </Text>
-      ))}
-    </ScrollView>
+        <GlassPanel strong style={styles.section}>
+          <Text style={styles.sectionTitle}>Préparation</Text>
+          {recipe.steps.map((step, index) => (
+            <Text key={step} style={styles.listItem}>
+              {index + 1}.  {step}
+            </Text>
+          ))}
+        </GlassPanel>
+      </ScrollView>
+    </AppBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
   content: {
     padding: spacing.xl,
     paddingBottom: spacing.xxl,
@@ -80,21 +84,24 @@ const styles = StyleSheet.create({
     marginTop: spacing.md,
   },
   tag: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.glassStrong,
     borderRadius: radius.pill,
     paddingHorizontal: spacing.sm,
     paddingVertical: 4,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.glassBorder,
   },
   tagText: {
     ...typography.caption,
     color: colors.textMuted,
   },
+  section: {
+    padding: spacing.lg,
+    marginTop: spacing.xl,
+  },
   sectionTitle: {
     ...typography.heading,
     color: colors.text,
-    marginTop: spacing.xl,
     marginBottom: spacing.sm,
   },
   listItem: {
@@ -103,7 +110,6 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xs,
   },
   notFound: {
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },

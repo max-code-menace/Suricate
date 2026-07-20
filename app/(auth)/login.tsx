@@ -2,6 +2,7 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { KeyboardAvoidingView, Platform, StyleSheet, Text, View } from 'react-native';
 
+import { AppBackground } from '@/components/AppBackground';
 import { FormField } from '@/components/FormField';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { colors, spacing, typography } from '@/theme/tokens';
@@ -22,50 +23,54 @@ export default function LoginScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
-      <View style={styles.header}>
-        <Text style={styles.emoji}>🦆💘</Text>
-        <Text style={styles.title}>Suricate</Text>
-        <Text style={styles.subtitle}>Le swipe qui donne aussi faim.</Text>
-      </View>
+    <AppBackground style={styles.container}>
+      <KeyboardAvoidingView
+        style={styles.keyboardView}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <View style={styles.header}>
+          <Text style={styles.emoji}>🦆💘</Text>
+          <Text style={styles.title}>Suricate</Text>
+          <Text style={styles.subtitle}>Le swipe qui donne aussi faim.</Text>
+        </View>
 
-      <View style={styles.form}>
-        <FormField
-          label="Email"
-          value={email}
-          onChangeText={setEmail}
-          autoCapitalize="none"
-          keyboardType="email-address"
-          placeholder="toi@exemple.com"
-        />
-        <FormField
-          label="Mot de passe"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          placeholder="••••••••"
-        />
+        <View style={styles.form}>
+          <FormField
+            label="Email"
+            value={email}
+            onChangeText={setEmail}
+            autoCapitalize="none"
+            keyboardType="email-address"
+            placeholder="toi@exemple.com"
+          />
+          <FormField
+            label="Mot de passe"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            placeholder="••••••••"
+          />
 
-        <PrimaryButton label="Se connecter" onPress={handleLogin} disabled={!canSubmit} style={styles.submit} />
+          <PrimaryButton label="Se connecter" onPress={handleLogin} disabled={!canSubmit} style={styles.submit} />
 
-        <PrimaryButton
-          label="Créer un compte"
-          variant="ghost"
-          onPress={() => router.push('/(auth)/signup')}
-        />
-      </View>
-    </KeyboardAvoidingView>
+          <PrimaryButton
+            label="Créer un compte"
+            variant="ghost"
+            onPress={() => router.push('/(auth)/signup')}
+          />
+        </View>
+      </KeyboardAvoidingView>
+    </AppBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: colors.background,
     padding: spacing.xl,
+    justifyContent: 'center',
+  },
+  keyboardView: {
+    flex: 1,
     justifyContent: 'center',
   },
   header: {

@@ -1,15 +1,17 @@
 import { useRouter } from 'expo-router';
-import { useMemo } from 'react';
-import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { useEffect, useMemo } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
+import { AppBackground } from '@/components/AppBackground';
 import { FoodCard } from '@/components/FoodCard';
+import { GlassPanel } from '@/components/GlassPanel';
 import { MatchOverlay } from '@/components/MatchOverlay';
 import { ModeSwitch } from '@/components/ModeSwitch';
 import { PersonCard } from '@/components/PersonCard';
 import { SwipeDeck } from '@/components/SwipeDeck';
 import { mockMeals } from '@/data/mockMeals';
 import { mockProfiles } from '@/data/mockProfiles';
-import { colors, spacing } from '@/theme/tokens';
+import { colors, spacing, typography } from '@/theme/tokens';
 import { useSwipeStore } from '@/store/useSwipeStore';
 
 export default function SwipeScreen() {
@@ -22,6 +24,12 @@ export default function SwipeScreen() {
   const swipeFood = useSwipeStore((state) => state.swipeFood);
   const lastMatch = useSwipeStore((state) => state.lastMatch);
   const clearLastMatch = useSwipeStore((state) => state.clearLastMatch);
+  const streakDays = useSwipeStore((state) => state.streakDays);
+  const registerActivity = useSwipeStore((state) => state.registerActivity);
+
+  useEffect(() => {
+    registerActivity();
+  }, [registerActivity]);
 
   const remainingProfiles = useMemo(
     () => mockProfiles.filter((p) => !seenPersonIds.includes(p.id)),
@@ -33,9 +41,16 @@ export default function SwipeScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <AppBackground>
       <View style={styles.header}>
-        <ModeSwitch mode={mode} onChange={setMode} />
+        <View style={styles.modeSwitchWrap}>
+          <ModeSwitch mode={mode} onChange={setMode} />
+        </View>
+        {streakDays > 0 && (
+          <GlassPanel style={styles.streak}>
+            <Text style={styles.streakText}>🔥 {streakDays}</Text>
+          </GlassPanel>
+        )}
       </View>
 
       <View style={styles.deckArea}>
@@ -74,23 +89,34 @@ export default function SwipeScreen() {
           router.push(`/recipe/${dishId}`);
         }}
       />
-    </SafeAreaView>
+    </AppBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
   header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.sm,
     paddingBottom: spacing.md,
   },
+  modeSwitchWrap: {
+    flex: 1,
+  },
+  streak: {
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+  },
+  streakText: {
+    ...typography.caption,
+    fontWeight: '700',
+    color: colors.text,
+  },
   deckArea: {
     flex: 1,
     paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.lg,
+    paddingBottom: 110,
   },
 });
