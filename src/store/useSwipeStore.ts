@@ -13,12 +13,19 @@ type SwipeState = {
   matches: Match[];
   cravings: Recipe[];
   lastMatch: Match | null;
+  streakDays: number;
+  lastActiveDate: string | null;
   setMode: (mode: SwipeMode) => void;
   swipePerson: (profileId: string, direction: 'left' | 'right') => void;
   swipeFood: (mealId: string, direction: 'left' | 'right') => void;
   clearLastMatch: () => void;
   resetDeck: () => void;
+  registerActivity: () => void;
 };
+
+function daysBetween(a: string, b: string): number {
+  return Math.round((new Date(b).getTime() - new Date(a).getTime()) / 86_400_000);
+}
 
 export const useSwipeStore = create<SwipeState>()(
   persist(
@@ -29,7 +36,20 @@ export const useSwipeStore = create<SwipeState>()(
       matches: [],
       cravings: [],
       lastMatch: null,
+      streakDays: 0,
+      lastActiveDate: null,
       setMode: (mode) => set({ mode }),
+      registerActivity: () => {
+        const today = new Date().toISOString().slice(0, 10);
+        const { lastActiveDate, streakDays } = get();
+
+        if (lastActiveDate === today) return;
+
+        const gap = lastActiveDate ? daysBetween(lastActiveDate, today) : null;
+        const nextStreak = gap === 1 ? streakDays + 1 : 1;
+
+        set({ lastActiveDate: today, streakDays: nextStreak });
+      },
       swipePerson: (profileId, direction) => {
         const profile = mockProfiles.find((p) => p.id === profileId);
         const { seenPersonIds, matches } = get();
