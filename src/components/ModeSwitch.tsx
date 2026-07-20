@@ -1,7 +1,9 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
-import { colors, radius, spacing, typography } from '@/theme/tokens';
+import { GlassPanel } from '@/components/GlassPanel';
+import { colors, gradients, radius, spacing, typography } from '@/theme/tokens';
 import type { SwipeMode } from '@/data/types';
 
 type Props = {
@@ -16,44 +18,52 @@ const OPTIONS: { value: SwipeMode; label: string; emoji: string }[] = [
 
 export function ModeSwitch({ mode, onChange }: Props) {
   return (
-    <View style={styles.container}>
+    <GlassPanel style={styles.container}>
       {OPTIONS.map((option) => {
         const isActive = option.value === mode;
-        return (
-          <Pressable
-            key={option.value}
-            onPress={() => onChange(option.value)}
-            style={[styles.option, isActive && styles.optionActive]}
-          >
+        const content = (
+          <>
             <Text style={styles.emoji}>{option.emoji}</Text>
             <Text style={[styles.label, isActive && styles.labelActive]}>{option.label}</Text>
+          </>
+        );
+
+        return (
+          <Pressable key={option.value} onPress={() => onChange(option.value)} style={styles.optionWrap}>
+            {isActive ? (
+              <LinearGradient
+                colors={gradients.primaryButton}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.option}
+              >
+                {content}
+              </LinearGradient>
+            ) : (
+              <View style={styles.option}>{content}</View>
+            )}
           </Pressable>
         );
       })}
-    </View>
+    </GlassPanel>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    backgroundColor: colors.background,
-    borderRadius: radius.pill,
     padding: 4,
-    borderWidth: 1,
-    borderColor: colors.border,
+  },
+  optionWrap: {
+    flex: 1,
   },
   option: {
     flexDirection: 'row',
     alignItems: 'center',
-    flex: 1,
     justifyContent: 'center',
     paddingVertical: spacing.sm,
     borderRadius: radius.pill,
     gap: spacing.xs,
-  },
-  optionActive: {
-    backgroundColor: colors.primary,
   },
   emoji: {
     fontSize: 16,
@@ -64,6 +74,6 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
   },
   labelActive: {
-    color: colors.surface,
+    color: colors.textOnDark,
   },
 });

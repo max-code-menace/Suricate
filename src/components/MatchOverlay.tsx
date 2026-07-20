@@ -1,8 +1,11 @@
 import React from 'react';
-import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Modal, StyleSheet, Text, View } from 'react-native';
+import Animated, { ZoomIn } from 'react-native-reanimated';
 
 import { Avatar } from '@/components/Avatar';
-import { colors, radius, spacing, typography } from '@/theme/tokens';
+import { GlassPanel } from '@/components/GlassPanel';
+import { PrimaryButton } from '@/components/PrimaryButton';
+import { colors, spacing, typography } from '@/theme/tokens';
 import type { Match } from '@/data/types';
 
 type Props = {
@@ -17,26 +20,24 @@ export function MatchOverlay({ match, onClose, onSeeRecipe }: Props) {
   return (
     <Modal transparent animationType="fade" visible onRequestClose={onClose}>
       <View style={styles.backdrop}>
-        <View style={styles.card}>
-          <Text style={styles.title}>C'est un match !</Text>
-          <Avatar
-            emoji={match.profile.avatarEmoji}
-            color={match.profile.avatarColor}
-            size={110}
-            style={styles.avatar}
-          />
-          <Text style={styles.name}>{match.profile.name}</Text>
-          <Text style={styles.subtitle}>
-            Vous avez aussi un point commun : {match.profile.favoriteDish.title} {match.profile.favoriteDish.emoji}
-          </Text>
+        <Animated.View entering={ZoomIn.springify().damping(11)} style={styles.cardWrap}>
+          <GlassPanel strong style={styles.card}>
+            <Text style={styles.title}>C'est un match !</Text>
+            <Avatar
+              emoji={match.profile.avatarEmoji}
+              color={match.profile.avatarColor}
+              size={110}
+              style={styles.avatar}
+            />
+            <Text style={styles.name}>{match.profile.name}</Text>
+            <Text style={styles.subtitle}>
+              Vous avez aussi un point commun : {match.profile.favoriteDish.title} {match.profile.favoriteDish.emoji}
+            </Text>
 
-          <Pressable style={[styles.button, styles.primaryButton]} onPress={onSeeRecipe}>
-            <Text style={styles.primaryButtonText}>Voir la recette</Text>
-          </Pressable>
-          <Pressable style={styles.button} onPress={onClose}>
-            <Text style={styles.buttonText}>Continuer à swiper</Text>
-          </Pressable>
-        </View>
+            <PrimaryButton label="Voir la recette" onPress={onSeeRecipe} style={styles.button} />
+            <PrimaryButton label="Continuer à swiper" variant="ghost" onPress={onClose} style={styles.button} />
+          </GlassPanel>
+        </Animated.View>
       </View>
     </Modal>
   );
@@ -45,15 +46,15 @@ export function MatchOverlay({ match, onClose, onSeeRecipe }: Props) {
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: 'rgba(36, 29, 29, 0.6)',
+    backgroundColor: 'rgba(34, 25, 53, 0.55)',
     alignItems: 'center',
     justifyContent: 'center',
     padding: spacing.lg,
   },
-  card: {
+  cardWrap: {
     width: '100%',
-    backgroundColor: colors.surface,
-    borderRadius: radius.lg,
+  },
+  card: {
     padding: spacing.xl,
     alignItems: 'center',
   },
@@ -78,22 +79,6 @@ const styles = StyleSheet.create({
   },
   button: {
     width: '100%',
-    alignItems: 'center',
-    paddingVertical: spacing.md,
-    borderRadius: radius.pill,
     marginTop: spacing.sm,
-  },
-  primaryButton: {
-    backgroundColor: colors.primary,
-  },
-  primaryButtonText: {
-    ...typography.body,
-    fontWeight: '700',
-    color: colors.surface,
-  },
-  buttonText: {
-    ...typography.body,
-    fontWeight: '600',
-    color: colors.textMuted,
   },
 });

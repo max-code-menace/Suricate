@@ -65,10 +65,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: spacing.lg,
-    backgroundColor: colors.background,
+    backgroundColor: colors.glassStrong,
     borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.glassBorder,
     padding: spacing.sm,
   },
   dishEmoji: {

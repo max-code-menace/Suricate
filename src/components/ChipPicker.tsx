@@ -41,15 +41,15 @@ const styles = StyleSheet.create({
   },
   chip: {
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.glassBorder,
     borderRadius: radius.pill,
     paddingHorizontal: spacing.sm,
     paddingVertical: spacing.xs,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.glassStrong,
   },
   chipActive: {
     borderColor: colors.primary,
-    backgroundColor: colors.background,
+    backgroundColor: 'rgba(255, 79, 129, 0.22)',
   },
   chipLabel: {
     fontSize: 20,

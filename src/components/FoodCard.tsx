@@ -1,6 +1,7 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
+import { PrimaryButton } from '@/components/PrimaryButton';
 import { colors, radius, spacing, typography } from '@/theme/tokens';
 import type { Recipe } from '@/data/types';
 
@@ -28,9 +29,7 @@ export function FoodCard({ recipe, onPressDetails }: Props) {
           ))}
         </View>
 
-        <Pressable onPress={onPressDetails} style={styles.recipeButton}>
-          <Text style={styles.recipeButtonText}>Voir la recette</Text>
-        </Pressable>
+        <PrimaryButton label="Voir la recette" onPress={onPressDetails} style={styles.recipeButton} />
       </View>
     </View>
   );
@@ -44,7 +43,6 @@ const styles = StyleSheet.create({
     flex: 1.1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.background,
   },
   emoji: {
     fontSize: 96,
@@ -70,12 +68,12 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
   },
   tag: {
-    backgroundColor: colors.background,
+    backgroundColor: colors.glassStrong,
     borderRadius: radius.pill,
     paddingHorizontal: spacing.sm,
     paddingVertical: 4,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.glassBorder,
   },
   tagText: {
     ...typography.caption,
@@ -84,14 +82,5 @@ const styles = StyleSheet.create({
   recipeButton: {
     marginTop: spacing.lg,
     alignSelf: 'flex-start',
-    backgroundColor: colors.secondary,
-    borderRadius: radius.pill,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-  },
-  recipeButtonText: {
-    ...typography.body,
-    fontWeight: '700',
-    color: colors.text,
   },
 });

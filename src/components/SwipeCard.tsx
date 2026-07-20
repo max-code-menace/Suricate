@@ -1,5 +1,7 @@
 import React from 'react';
 import { Dimensions, StyleSheet } from 'react-native';
+import { BlurView } from 'expo-blur';
+import * as Haptics from 'expo-haptics';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   interpolate,
@@ -12,6 +14,14 @@ import Animated, {
 
 import { colors, radius, shadow } from '@/theme/tokens';
 import type { SwipeDirection } from '@/data/types';
+
+function triggerSwipeHaptic(direction: SwipeDirection) {
+  if (direction === 'right') {
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+  } else {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  }
+}
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const SWIPE_THRESHOLD = SCREEN_WIDTH * 0.28;
@@ -43,6 +53,7 @@ export function SwipeCard({ children, onSwiped, isTop, stackIndex }: Props) {
           duration: 250,
         });
         translateY.value = withTiming(event.translationY, { duration: 250 });
+        runOnJS(triggerSwipeHaptic)(direction);
         runOnJS(onSwiped)(direction);
         return;
       }
@@ -77,6 +88,8 @@ export function SwipeCard({ children, onSwiped, isTop, stackIndex }: Props) {
   return (
     <GestureDetector gesture={pan}>
       <Animated.View style={[styles.card, cardStyle]}>
+        <BlurView intensity={30} tint="light" style={StyleSheet.absoluteFill} />
+        <Animated.View style={styles.glassOverlay} />
         {children}
         {isTop && (
           <>
@@ -99,9 +112,14 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     borderRadius: radius.lg,
-    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.glassBorder,
     overflow: 'hidden',
     ...shadow.card,
+  },
+  glassOverlay: {
+    ...StyleSheet.absoluteFill,
+    backgroundColor: colors.glassStrong,
   },
   stamp: {
     position: 'absolute',
